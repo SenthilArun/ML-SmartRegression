@@ -1,0 +1,156 @@
+# AIMS Configuration Example
+# Copy this file to config.yaml and modify according to your environment
+
+environment: "development"  # development, production, testing
+debug: false
+
+# Database Configuration
+database:
+  # InfluxDB for time-series metrics
+  influxdb_url: "http://localhost:8086"
+  influxdb_org: "aims"
+  influxdb_bucket: "metrics"
+  influxdb_token: null  # Set via environment variable INFLUXDB_TOKEN
+  
+  # MongoDB for configuration and events
+  mongodb_url: "mongodb://localhost:27017"
+  mongodb_database: "aims"
+  
+  # Redis for caching and message bus
+  redis_url: "redis://localhost:6379/0"
+  redis_password: null
+
+# Alerting Configuration
+alerting:
+  # Email notifications
+  smtp_server: null  # e.g., "smtp.gmail.com"
+  smtp_port: 587
+  smtp_username: null
+  smtp_password: null  # Set via environment variable
+  smtp_use_tls: true
+  
+  # Slack notifications
+  slack_token: null  # Set via environment variable
+  slack_channel: "#alerts"
+  
+  # PagerDuty integration
+  pagerduty_api_key: null  # Set via environment variable
+  pagerduty_service_id: null
+
+# Security Configuration
+security:
+  secret_key: "your-secret-key-change-this"  # Set via environment variable
+  api_key_enabled: true
+  oauth_enabled: false
+  oauth_provider: null
+  oauth_client_id: null
+  oauth_client_secret: null
+  tls_cert_path: null
+  tls_key_path: null
+
+# Monitoring Configuration
+monitoring:
+  collection_interval: 30  # seconds
+  batch_size: 100
+  retention_days: 90
+  gpu_monitoring_enabled: true
+  dcim_monitoring_enabled: true
+  k8s_monitoring_enabled: false
+
+# DCIM Integration Configuration
+dcim:
+  snmp_enabled: true
+  snmp_community: "public"
+  snmp_version: "2c"
+  snmp_timeout: 5
+  modbus_enabled: true
+  modbus_timeout: 5
+  rest_api_enabled: true
+  rest_api_timeout: 30
+
+# Kubernetes Integration
+kubernetes:
+  kubeconfig_path: null  # Path to kubeconfig file
+  namespace: "default"
+  service_account_token: null
+  api_server_url: null
+
+# Web Interface Configuration
+web:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+  cors_origins: ["*"]
+  static_files_path: "static"
+  templates_path: "templates"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "{time} | {level} | {name} | {message}"
+  rotation: "10 MB"
+  retention: "10 days"
+  file_path: "logs/aims.log"
+  json_format: false
+
+# Device Configuration Examples
+devices:
+  # GPU Server Example
+  gpu_server_001:
+    type: "gpu_server"
+    ip_address: "192.168.1.100"
+    location: "Rack A1"
+    rack_position: "U10-U12"
+    protocols:
+      ipmi:
+        enabled: true
+        username: "admin"
+        password: "password"  # Use environment variables in production
+      redfish:
+        enabled: true
+        username: "admin"
+        password: "password"
+        base_url: "https://192.168.1.100/redfish/v1"
+    monitoring:
+      gpu_enabled: true
+      temperature_threshold: 85
+      memory_threshold: 95
+  
+  # Cooling Unit Example
+  cooling_unit_001:
+    type: "cooling_unit"
+    ip_address: "192.168.1.200"
+    location: "Cooling Row 1"
+    protocols:
+      snmp:
+        enabled: true
+        community: "public"
+        version: "2c"
+      modbus:
+        enabled: true
+        unit_id: 1
+        port: 502
+    monitoring:
+      temperature_enabled: true
+      flow_rate_enabled: true
+      power_enabled: true
+  
+  # Power Distribution Unit Example
+  pdu_001:
+    type: "power_unit"
+    ip_address: "192.168.1.210"
+    location: "Rack A1 PDU"
+    protocols:
+      snmp:
+        enabled: true
+        community: "public"
+        version: "2c"
+      rest_api:
+        enabled: true
+        base_url: "https://192.168.1.210/api/v1"
+        api_key: "your-api-key"
+    monitoring:
+      power_consumption: true
+      voltage_monitoring: true
+      current_monitoring: true
